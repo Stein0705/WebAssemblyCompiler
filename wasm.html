@@ -133,7 +133,8 @@
             // Take type from second word if exists valid type
             let type = "i32"; // default type
             if (words.length > 1) {
-                const validTypes = ["i32", "i64", "f32", "f64"];
+                console.log(words)
+                const validTypes = ["empty", "i32", "i64", "f32", "f64"];
                 if (validTypes.includes(words[1])) {
                     type = words[1];
                     words.splice(1, 1); // remove type from words
@@ -145,6 +146,9 @@
                 "return": 0x0F,     // return
                 "drop": 0x1A,      // drop
                 "call": 0x10,      // call
+                "if": 0x04,        // if
+                "else": 0x05,      // else
+                "end": 0x0B,       // end
                 "add": { i32: 0x6A, i64: 0x7C, f32: 0x92, f64: 0xA0 },
                 "sub": { i32: 0x6B, i64: 0x7D, f32: 0x93, f64: 0xA1 },
                 "mul": { i32: 0x6C, i64: 0x7E, f32: 0x94, f64: 0xA2 },
@@ -152,6 +156,7 @@
                 "const": { i32: 0x41, i64: 0x42, f32: 0x43, f64: 0x44 }
            
             };
+            blocktypes = {empty: 0x40, i32: 0x7F, i64: 0x7E, f32: 0x7D, f64: 0x7C};
 
             let bytes = [];
 
@@ -170,6 +175,17 @@
                 case "call":
                     bytes.push(opcodes.call);
                     bytes.push(Number(words[1]));
+                    break;
+                case "if":
+                    bytes.push(opcodes.if);
+                    bytes.push(blocktypes[type]);
+                    console.log("Using blocktype"  + blocktypes[type] ,"for type" + type)
+                    break;
+                case "else":
+                    bytes.push(opcodes.else);
+                    break;
+                case "end":
+                    bytes.push(opcodes.end);
                     break;
                 case "add":
                 case "sub":
